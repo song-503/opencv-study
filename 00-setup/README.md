@@ -7,9 +7,11 @@
 
 | 항목 | 값 |
 |---|---|
-| Visual Studio | (버전 기입) |
-| OpenCV | (버전 기입) |
-| OpenCV 설치 경로 | (예: `C:\opencv`) |
+| OS | Windows 11 |
+| IDE | Visual Studio 2026 Community (Insiders 채널) |
+| 컴파일러 | MSVC (C++를 사용한 데스크톱 개발 워크로드) |
+| OpenCV | 4.XX.X |
+| OpenCV 설치 경로 | `C:\...\opencv` |
 | 빌드 구성 | Debug / x64 |
 
 ## 1. Visual Studio 설치
