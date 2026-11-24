@@ -5,13 +5,9 @@
 
 ## 내 환경
 
-| 항목 | 값 |
-|---|---|
-| OS | Windows 11 |
-| IDE | Visual Studio 2026 Community (Insiders 채널) |
-| 컴파일러 | MSVC (C++를 사용한 데스크톱 개발 워크로드) |
-| OpenCV | 4.XX.X |
-| 빌드 구성 | Debug / x64 |
+| IDE | OpenCV | 빌드 |
+|---|---|---|
+| Visual Studio 2026 Community | (버전 확인 중) | Debug / x64 |
 
 ## 1. Visual Studio 설치
 
@@ -23,7 +19,7 @@ OpenCV는 공식 사이트의 Releases 페이지에서 Windows용 패키지를 �
 
 압축을 풀면 `build` 폴더 아래에 세 가지가 중요하다. `include` 폴더에는 `opencv2/opencv.hpp` 같은 헤더 파일이 있어 코드에서 OpenCV 함수의 선언을 가져올 때 쓰인다. `x64\vcXX\lib` 폴더에는 링크 단계에서 필요한 `.lib` 파일이, `x64\vcXX\bin` 폴더에는 실행할 때 필요한 `.dll` 파일이 들어 있다. 여기서 `vcXX`는 OpenCV를 빌드한 Visual Studio 컴파일러 버전을 뜻하며, 공식 Windows 패키지는 x64용으로 제공된다.
 
-라이브러리 파일은 `opencv_world4XXX.lib`처럼 모든 모듈이 하나로 합쳐진 형태이고, 이름 끝에 `d`가 붙은 `opencv_world4XXXd.lib`는 Debug 빌드 전용이다. Debug 구성에서 `d`가 없는 라이브러리를 섞어 쓰면 빌드는 되더라도 실행 중 비정상 종료가 날 수 있으므로 구성에 맞는 파일을 연결해야 한다.
+라이브러리 파일은 `opencv_worldXXX.lib`처럼 모든 모듈이 하나로 합쳐진 형태이고, 이름 끝에 `d`가 붙은 `opencv_worldXXXd.lib`는 Debug 빌드 전용이다. Debug 구성에서 `d`가 없는 라이브러리를 섞어 쓰면 빌드는 되더라도 실행 중 비정상 종료가 날 수 있으므로 구성에 맞는 파일을 연결해야 한다.
 
 ## 3. 프로젝트 환경 설정
 
@@ -31,11 +27,11 @@ Visual Studio에서 빈 C++ 프로젝트를 만든 뒤, 상단의 솔루션 플�
 
 먼저 **C/C++ → 일반 → 추가 포함 디렉터리**에 `build\include` 경로를 넣는다. 컴파일러는 `#include <opencv2/opencv.hpp>`를 만나면 이 경로에서 헤더를 찾는다. 이 설정이 없으면 컴파일 단계에서 헤더를 찾을 수 없다는 오류가 난다.
 
-다음으로 **링커 → 일반 → 추가 라이브러리 디렉터리**에 `build\x64\vcXX\lib` 경로를, **링커 → 입력 → 추가 종속성**에 `opencv_world4XXXd.lib`를 넣는다. 헤더에는 함수의 선언만 있고 실제 구현은 라이브러리에 있기 때문에, 링커가 어떤 파일에서 구현을 가져올지 알려줘야 한다. 이 설정이 빠지면 `cv::imshow` 같은 함수를 찾을 수 없다는 링크 오류가 발생한다.
+다음으로 **링커 → 일반 → 추가 라이브러리 디렉터리**에 `build\x64\vcXX\lib` 경로를, **링커 → 입력 → 추가 종속성**에 `opencv_worldXXXd.lib`를 넣는다. 헤더에는 함수의 선언만 있고 실제 구현은 라이브러리에 있기 때문에, 링커가 어떤 파일에서 구현을 가져올지 알려줘야 한다. 이 설정이 빠지면 `cv::imshow` 같은 함수를 찾을 수 없다는 링크 오류가 발생한다.
 
 마지막으로 실행 시 필요한 dll 위치를 알려준다. Windows는 프로그램을 실행할 때 실행 파일과 같은 폴더나 시스템 환경 변수 `Path`에 등록된 폴더에서 dll을 찾는다. 따라서 `build\x64\vcXX\bin` 경로를 시스템 `Path`에 추가하거나, 프로젝트 속성의 **디버깅 → 환경**에 `PATH=...\bin;%PATH%`를 지정한다. 이 설정이 없으면 빌드는 성공하지만 실행하는 순간 dll이 없다는 오류 창이 뜬다.
 
-Release 구성으로 빌드할 때는 같은 설정을 Release / x64 구성에도 반복하되, 추가 종속성에는 `d`가 없는 `opencv_world4XXX.lib`를 넣는다.
+Release 구성으로 빌드할 때는 같은 설정을 Release / x64 구성에도 반복하되, 추가 종속성에는 `d`가 없는 `opencv_worldXXX.lib`를 넣는다.
 
 ## 4. 동작 확인
 
