@@ -5,13 +5,13 @@
 
   전제: 환경변수 OPENCV_DIR = OpenCV의 build 폴더 (예: C:\opencv\build)
   아래 두 값은 설치한 OpenCV에 맞게 한 번만 수정할 것
-    - OpenCVVer : lib 파일명의 숫자 (opencv_world4100.lib 이면 4100)
+    - OpenCVVer : lib 파일명의 숫자 (opencv_world341.lib 이면 341)
     - OpenCVVc  : build\x64 아래 폴더명 (vc16 / vc17 등)
 -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="UserMacros">
-    <OpenCVVer>4100</OpenCVVer>
-    <OpenCVVc>vc16</OpenCVVc>
+    <OpenCVVer>341</OpenCVVer>
+    <OpenCVVc>vc15</OpenCVVc>
   </PropertyGroup>
 
   <!-- 디버깅 실행 시 OpenCV dll을 찾을 수 있도록 PATH 추가 (dll을 프로젝트 폴더에 복사할 필요 없음) -->
