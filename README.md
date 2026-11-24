@@ -1,0 +1,31 @@
+# OpenCV Study (C++)
+
+Visual Studio + OpenCV(C++)로 영상처리 기초부터 얼굴 모자이크까지 공부한 기록
+
+## 진도표
+
+| # | 주제 | 상태 |
+|---|---|---|
+| 00 | [개발환경 구축](00-setup/) | ⬜ |
+| 01 | [이미지 기초](01-image-basics/) | ⬜ |
+| 02 | [픽셀 접근 / ROI](02-pixel-roi/) | ⬜ |
+| 03 | [필터링](03-filtering/) | ⬜ |
+| 04 | [모자이크](04-mosaic/) | ⬜ |
+| 05 | [얼굴 검출 + 모자이크](05-face-mosaic/) | ⬜ |
+
+> ⬜ 시작 전 · 🔄 진행 중 · ✅ 완료
+
+## 환경
+- OS: Windows
+- IDE: Visual Studio (버전 기입)
+- OpenCV: (버전 기입)
+- 공통 설정: [`OpenCV.props`](OpenCV.props) — 환경변수 `OPENCV_DIR` 기반
+
+## 단원별 구성
+각 폴더는 같은 형식으로 정리한다.
+- `README.md` — 핵심 개념, 코드 설명, 결과, 막힌 점, 확인 문제
+- `main.cpp` — 실습 코드
+- `result/` — 실행 결과 캡처
+
+## 이미지 출처
+테스트 이미지는 무료 라이선스 이미지만 사용하며 출처는 [`images/README.md`](images/README.md)에 기록한다.

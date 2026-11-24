@@ -1,0 +1,25 @@
+# Visual Studio 작업/캐시 파일
+.vs/
+*.user
+*.suo
+*.ipch
+*.VC.db
+*.VC.opendb
+*.aps
+
+# 빌드 산출물
+x64/
+x86/
+Win32/
+Debug/
+Release/
+*.exe
+*.obj
+*.pdb
+*.ilk
+*.idb
+*.lib
+*.dll
+
+# OpenCV 설치 폴더는 레포에 넣지 않음 (용량 큼, 각자 PC에 설치)
+opencv/
