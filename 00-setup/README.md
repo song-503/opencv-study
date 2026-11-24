@@ -1,7 +1,7 @@
 # 00. 개발환경 구축 (Visual Studio + OpenCV)
 
 > 전공 교재를 참고해 설치 과정과 환경 설정들을 정리
-> 참고 교재: IOT에서의 디지털 영상처리 [김인겸 저
+> 참고 교재: IOT에서의 디지털 영상처리 [김인겸 저]
 
 ## 내 환경
 
@@ -11,7 +11,6 @@
 | IDE | Visual Studio 2026 Community (Insiders 채널) |
 | 컴파일러 | MSVC (C++를 사용한 데스크톱 개발 워크로드) |
 | OpenCV | 4.XX.X |
-| OpenCV 설치 경로 | `C:\...\opencv` |
 | 빌드 구성 | Debug / x64 |
 
 ## 1. Visual Studio 설치
