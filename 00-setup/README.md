@@ -1,39 +1,71 @@
 # 00. 개발환경 구축 (Visual Studio + OpenCV)
 
-## 목표
-Visual Studio에서 OpenCV(C++) 프로젝트를 빌드하고 이미지 한 장을 띄운다.
+> 전공 교재의 설치 과정을 바탕으로, 각 단계가 왜 필요한지 함께 정리했다.
+> 참고 교재: (교재명 기입)
 
-## 설치 정보
-- Visual Studio: (버전)
-- OpenCV: (버전), 설치 경로: (예: `C:\opencv`)
+## 내 환경
 
-## 설치 과정
-1. OpenCV Windows 패키지 다운로드 및 압축 해제
-2. 환경변수 `OPENCV_DIR` = `...\opencv\build` 설정
-3. `OpenCV.props`의 `OpenCVVer`, `OpenCVVc` 값을 설치 버전에 맞게 수정
-   - `OpenCVVer`: `build\x64\vcXX\lib` 안의 `opencv_worldXXXX.lib` 숫자
-   - `OpenCVVc`: `build\x64` 아래 폴더명
-4. VS에서 빈 C++ 프로젝트 생성 → 플랫폼 **x64** 확인
-5. 속성 관리자 → 기존 속성 시트 추가 → `OpenCV.props`
-6. 테스트 코드 실행
+| 항목 | 값 |
+|---|---|
+| Visual Studio | (버전 기입) |
+| OpenCV | (버전 기입) |
+| OpenCV 설치 경로 | (예: `C:\opencv`) |
+| 빌드 구성 | Debug / x64 |
 
-## 왜 절대경로 대신 환경변수 + props를 쓰나
-(직접 정리)
+## 1. Visual Studio 설치
 
-## 막힌 점
-- 문제:
-- 원인:
-- 해결:
+Visual Studio는 Visual Studio Installer를 통해 설치하며, 설치 과정에서 어떤 개발 도구를 함께 받을지 "워크로드" 단위로 고른다. C++로 OpenCV를 사용하려면 **C++를 사용한 데스크톱 개발** 워크로드를 선택해야 한다. 이 워크로드에 C++ 소스를 기계어로 번역하는 MSVC 컴파일러와 링커, 그리고 Windows 프로그램을 만들 때 필요한 Windows SDK가 포함되어 있다. VS Code와 달리 Visual Studio는 이 컴파일러를 함께 설치하기 때문에 별도로 gcc 같은 컴파일러를 준비할 필요가 없다.
+
+## 2. OpenCV 설치
+
+OpenCV는 공식 사이트의 Releases 페이지에서 Windows용 패키지를 내려받는다. 패키지는 실행하면 압축이 풀리는 형태로, 지정한 경로(예: `C:\opencv`)에 미리 빌드된 라이브러리가 풀린다. 직접 소스를 컴파일하지 않아도 바로 쓸 수 있다는 것이 이 방식의 장점이다.
+
+압축을 풀면 `build` 폴더 아래에 세 가지가 중요하다. `include` 폴더에는 `opencv2/opencv.hpp` 같은 헤더 파일이 있어 코드에서 OpenCV 함수의 선언을 가져올 때 쓰인다. `x64\vcXX\lib` 폴더에는 링크 단계에서 필요한 `.lib` 파일이, `x64\vcXX\bin` 폴더에는 실행할 때 필요한 `.dll` 파일이 들어 있다. 여기서 `vcXX`는 OpenCV를 빌드한 Visual Studio 컴파일러 버전을 뜻하며, 공식 Windows 패키지는 x64용으로 제공된다.
+
+라이브러리 파일은 `opencv_world4XXX.lib`처럼 모든 모듈이 하나로 합쳐진 형태이고, 이름 끝에 `d`가 붙은 `opencv_world4XXXd.lib`는 Debug 빌드 전용이다. Debug 구성에서 `d`가 없는 라이브러리를 섞어 쓰면 빌드는 되더라도 실행 중 비정상 종료가 날 수 있으므로 구성에 맞는 파일을 연결해야 한다.
+
+## 3. 프로젝트 환경 설정
+
+Visual Studio에서 빈 C++ 프로젝트를 만든 뒤, 상단의 솔루션 플랫폼을 **x64**로 맞춘다. OpenCV 라이브러리가 x64용이기 때문에 플랫폼이 x86이면 링크 단계에서 실패한다. 이후 프로젝트 속성에서 구성을 Debug / x64로 선택한 상태로 아래 설정을 한다.
+
+먼저 **C/C++ → 일반 → 추가 포함 디렉터리**에 `build\include` 경로를 넣는다. 컴파일러는 `#include <opencv2/opencv.hpp>`를 만나면 이 경로에서 헤더를 찾는다. 이 설정이 없으면 컴파일 단계에서 헤더를 찾을 수 없다는 오류가 난다.
+
+다음으로 **링커 → 일반 → 추가 라이브러리 디렉터리**에 `build\x64\vcXX\lib` 경로를, **링커 → 입력 → 추가 종속성**에 `opencv_world4XXXd.lib`를 넣는다. 헤더에는 함수의 선언만 있고 실제 구현은 라이브러리에 있기 때문에, 링커가 어떤 파일에서 구현을 가져올지 알려줘야 한다. 이 설정이 빠지면 `cv::imshow` 같은 함수를 찾을 수 없다는 링크 오류가 발생한다.
+
+마지막으로 실행 시 필요한 dll 위치를 알려준다. Windows는 프로그램을 실행할 때 실행 파일과 같은 폴더나 시스템 환경 변수 `Path`에 등록된 폴더에서 dll을 찾는다. 따라서 `build\x64\vcXX\bin` 경로를 시스템 `Path`에 추가하거나, 프로젝트 속성의 **디버깅 → 환경**에 `PATH=...\bin;%PATH%`를 지정한다. 이 설정이 없으면 빌드는 성공하지만 실행하는 순간 dll이 없다는 오류 창이 뜬다.
+
+Release 구성으로 빌드할 때는 같은 설정을 Release / x64 구성에도 반복하되, 추가 종속성에는 `d`가 없는 `opencv_world4XXX.lib`를 넣는다.
+
+## 4. 정리: 빌드 과정과 설정의 관계
+
+| 단계 | 하는 일 | 필요한 설정 | 빠졌을 때 |
+|---|---|---|---|
+| 컴파일 | 소스를 목적 파일로 번역 | 추가 포함 디렉터리 | 헤더를 찾을 수 없음 (C1083) |
+| 링크 | 함수 구현을 연결해 exe 생성 | 라이브러리 디렉터리 + 추가 종속성 | 외부 기호 확인 불가 (LNK2019 / LNK1104) |
+| 실행 | 프로그램 로드 | dll 경로 (Path) | dll이 없다는 오류 창 |
+
+## 5. 동작 확인
+
+헤더 없는 8비트 그레이스케일 RAW 파일을 읽어 화면에 띄우는 [`main.cpp`](main.cpp)로 설정을 확인했다. 실행 인수는 프로젝트 속성의 **디버깅 → 명령 인수**에 `<파일 경로> <WIDTH> <HEIGHT>` 형식으로 넣는다. 이미지 창이 뜨면 컴파일, 링크, 실행 단계의 설정이 모두 정상이라는 뜻이다.
+
+| 입력 | 결과 |
+|---|---|
+| `boat.512 512 512` | 정상 출력 |
+| `boat.512 256 256` | `size mismatch` 오류 (파일 크기 검증) |
+| 존재하지 않는 파일 | `cannot open file` 오류 |
+| `boat.512 -512 512` | `WIDTH must be positive` 오류 |
+
+![결과](result/boat.png)
 
 ## 확인 문제
 <details>
-<summary>Q1. Debug 빌드에서 opencv_worldXXXX.lib(뒤에 d 없음)를 링크하면 어떤 문제가 생기나?</summary>
+<summary>Q1. 헤더 경로만 설정하고 lib를 연결하지 않으면 어느 단계에서, 왜 실패하나?</summary>
 
 (답 작성)
 </details>
 
 <details>
-<summary>Q2. 빌드는 되는데 실행하면 "dll을 찾을 수 없습니다"가 뜨는 이유와 해결법은?</summary>
+<summary>Q2. 빌드는 성공했는데 실행 시 dll 오류가 나는 이유는?</summary>
 
 (답 작성)
 </details>
