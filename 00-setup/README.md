@@ -8,13 +8,13 @@
 
 ## 1. Visual Studio 설치
 
-Visual Studio Installer에서 **C++를 사용한 데스크톱 개발** 워크로드를 선택해 설치한다. 이 워크로드에 MSVC 컴파일러와 링커, Windows SDK가 들어 있어서 컴파일러를 따로 설치할 필요가 없다.
+Visual Studio Installer에서 **C++를 사용한 데스크톱 개발** 워크로드를 선택해 설치한다. 해당 워크로드에 MSVC 컴파일러와 링커, Windows SDK가 들어 있어서 컴파일러를 따로 설치할 필요가 없다.
 
 ## 2. OpenCV 설치
 
 OpenCV 공식 사이트에서 Windows용 패키지를 받아 원하는 경로(예: `C:\opencv`)에 압축을 푼다. 미리 빌드된 파일이라 소스를 직접 컴파일하지 않아도 된다.
 
-`build` 폴더에서 실제로 쓰는 곳은 세 군데다. `include`에는 헤더 파일이, `x64\vcXX\lib`에는 링크할 때 필요한 lib 파일이, `x64\vcXX\bin`에는 실행할 때 필요한 dll 파일이 있다. `vcXX`는 OpenCV를 빌드한 Visual Studio 컴파일러 버전을 뜻한다.
+`build` 폴더에서 실제로 쓰는 곳은 크게 세가지이다. `include`에는 헤더 파일이, `x64\vcXX\lib`에는 링크할 때 필요한 lib 파일이, `x64\vcXX\bin`에는 실행할 때 필요한 dll 파일이 들어있다. `vcXX`는 OpenCV를 빌드한 Visual Studio 컴파일러 버전을 뜻한다.
 
 lib는 모든 모듈이 `opencv_world4140.lib` 하나로 합쳐져 있고, 끝에 `d`가 붙은 `opencv_world4140d.lib`가 Debug용이다. Debug 빌드에 Release용 lib를 연결하면 빌드는 되더라도 실행 중에 비정상 종료될 수 있다.
 
