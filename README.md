@@ -12,8 +12,8 @@ Visual Studio + OpenCV(C++)로 영상처리 기초부터 얼굴 모자이크까�
 
 ## 환경
 - OS: Windows
-- IDE: Visual Studio (버전 기입)
-- OpenCV: (버전 기입)
+- IDE: Visual Studio 2026 Community
+- OpenCV: 3.4.1
 - 공통 설정: [`OpenCV.props`](OpenCV.props) — 환경변수 `OPENCV_DIR` 기반
 
 ## 단원별 구성
