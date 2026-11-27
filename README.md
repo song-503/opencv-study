@@ -1,6 +1,6 @@
 # OpenCV Study (C++)
 
-Visual Studio + OpenCV(C++)로 영상처리 기초부터 얼굴 모자이크까지 공부한 기록
+Visual Studio + OpenCV(C++)로 영상처리 실습 기록
 
 ## 진도표
 
