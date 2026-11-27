@@ -153,10 +153,7 @@ uchar** uc_alloc_contiguous(int size_x, int size_y)
 }
 ```
 
-<br>
-<br>
-
-#### 3) `"r"`로 열면 RAW 파일을 끝까지 못 읽음
+### 3) `"r"`로 열면 RAW 파일을 끝까지 못 읽음
 
 `read_ucmatrix`의 `fopen_s` 모드를 `"rb"`에서 `"r"`로 바꿔 실행했다.
 읽기 단계에서 바로 종료됐다.
