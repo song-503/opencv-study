@@ -184,8 +184,6 @@ Data Read Error!
 C:\Users\***\source\repos\TestViewer\x64\Debug\TestViewer.exe(프로세스 15088)이(가) 0 코드(0x0)와 함께 종료되었습니다.
 ```
 
-에러인데 종료 코드가 0인 건 1)의 `exit(0)` 문제다.
-
 **원인**
 
 `"r"`은 텍스트 모드다.
