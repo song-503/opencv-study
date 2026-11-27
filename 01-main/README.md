@@ -144,12 +144,12 @@ m ──► [ m[0]        ] ──► [ p p p ... p ]   0행 픽셀 size_x개
 ```cpp
 uchar** uc_alloc_contiguous(int size_x, int size_y)
 {
-    uchar** m = (uchar**)calloc(size_y, sizeof(uchar*));           // 행 포인터 배열
-    uchar* data = (uchar*)calloc(size_x * size_y, sizeof(uchar));  // 픽셀 전체를 한 블록으로
+    uchar** m = (uchar**)calloc(size_y, sizeof(uchar*));           
+    uchar* data = (uchar*)calloc(size_x * size_y, sizeof(uchar)); 
     if (m == NULL || data == NULL) { free(m); free(data); exit(EXIT_FAILURE); }
 
     for (int i = 0; i < size_y; i++)
-        m[i] = data + i * size_x;   // 할당이 아니라 주소 계산만 반복
-    return m;                       // 해제: free(m[0]); free(m);
+        m[i] = data + i * size_x;  
+    return m;                       
 }
 ```
