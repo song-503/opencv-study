@@ -84,6 +84,26 @@ RAW 영상은 `"rb"`, `"wb"`처럼 **바이너리 모드**로 연다. <p>
 | `unsigned char` | 1 B | **0 ~ 255** |
 | `int` | 4 B | 약 ±21억 |
 
+## 6. `read_ucmatrix` / `write_ucmatrix`
+
+두 함수는 같은 모양이고 데이터가 흐르는 방향만 반대다.
+
+```text
+read_ucmatrix  : 디스크 RAW 파일 ──► 메모리 ucmatrix   (읽기)
+write_ucmatrix : 메모리 ucmatrix ──► 디스크 새 파일    (쓰기)
+```
+
+| 함수 | 파일 모드 | 하는 일 |
+|---|---|---|
+| `read_ucmatrix` | `"rb"` | `uc_alloc`으로 만든 빈 배열에 RAW 파일의 픽셀 `size_x * size_y`개를 채운다 |
+| `write_ucmatrix` | `"wb"` | 배열에 들어 있는 픽셀 `size_x * size_y`개를 새 바이너리 파일로 저장한다 |
+
+`read_ucmatrix`는 배열을 만들지 않는다.
+그래서 호출 전에 반드시 `uc_alloc`으로 공간을 잡아 둬야 한다.
+
+이 템플릿의 `main`은 `write_ucmatrix`를 호출하지 않는다.
+이후 단원에서 가공한 결과를 파일로 남길 때 쓴다.
+
 ## 막힌 점
 
 ### 1) 에러인데 `exit(0)`으로 종료함
