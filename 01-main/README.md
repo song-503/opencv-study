@@ -1,5 +1,5 @@
 ## #include <opencv2/opencv.hpp> 
-: OpenCV의 주요 기능 헤더 파일들을 통합해 사용하게 해줌
+: OpenCV의 주요 기능 헤더 파일들을 통합해 사용하게 해줌 <p>
 : OpenCV에서는 모든 기능이 cv라는 네임스페이스 내부에서 진행됨
 
 ## cv 명령어
