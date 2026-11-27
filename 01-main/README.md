@@ -106,6 +106,7 @@ RAW 영상은 `"rb"`, `"wb"`처럼 **바이너리 모드**로 연다. <p>
 
 > `exit`는 즉시 종료라서 지역 객체의 소멸자가 호출되지 않는다.
 > 정리 작업이 필요한 코드라면 `main`에서 `return`으로 끝내는 편이 안전하다.
+<br>
 
 ### 2) 2차원 할당에서 `calloc` 하나만 반복문인 이유
 
@@ -150,6 +151,7 @@ uchar** uc_alloc_contiguous(int size_x, int size_y)
     return m;                       
 }
 ```
+<br>
 
 ### 3) `"r"`로 열면 RAW 파일을 끝까지 못 읽음
 
