@@ -87,22 +87,22 @@ RAW 영상은 `"rb"`, `"wb"`처럼 **바이너리 모드**로 연다. <p>
 ## 6. `read_ucmatrix` / `write_ucmatrix`
 
 두 함수는 같은 모양이고 데이터가 흐르는 방향만 반대다.
+실제로는 아래 순서로 짝을 지어 쓴다.
 
 ```text
-read_ucmatrix  : 디스크 RAW 파일 ──► 메모리 ucmatrix   (읽기)
-write_ucmatrix : 메모리 ucmatrix ──► 디스크 새 파일    (쓰기)
+uc_alloc ──► read_ucmatrix ──► 픽셀 가공 ──► write_ucmatrix
+빈 배열 준비   원본 파일 → 배열               배열 → 새 결과 파일
 ```
 
-| 함수 | 파일 모드 | 하는 일 |
+| 함수 | 모드 + 입출력 | 하는 일 |
 |---|---|---|
-| `read_ucmatrix` | `"rb"` | `uc_alloc`으로 만든 빈 배열에 RAW 파일의 픽셀 `size_x * size_y`개를 채운다 |
-| `write_ucmatrix` | `"wb"` | 배열에 들어 있는 픽셀 `size_x * size_y`개를 새 바이너리 파일로 저장한다 |
+| `read_ucmatrix` | `"rb"` + `fread` | 빈 배열에 원본 파일의 픽셀 `size_x * size_y`개를 채운다 |
+| `write_ucmatrix` | `"wb"` + `fwrite` | 배열에 담긴 픽셀 `size_x * size_y`개로 새 결과 파일을 만든다 |
 
-`read_ucmatrix`는 배열을 만들지 않는다.
-그래서 호출 전에 반드시 `uc_alloc`으로 공간을 잡아 둬야 한다.
+`"wb"`는 같은 이름의 파일이 있으면 내용을 지우고 새로 쓴다.
+`write_ucmatrix`에 원본과 같은 파일명을 주면 원본이 덮어써진다.
 
-이 템플릿의 `main`은 `write_ucmatrix`를 호출하지 않는다.
-이후 단원에서 가공한 결과를 파일로 남길 때 쓴다.
+이 템플릿의 `main`은 아직 `write_ucmatrix`를 호출하지 않는다.
 
 ## 막힌 점
 
