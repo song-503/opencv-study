@@ -28,8 +28,7 @@ Exe imgData x_size y_size        예) Exe boat.512 512 512
 
 ## 2. `#include <opencv2/opencv.hpp>`
 
-OpenCV의 주요 모듈 헤더를 한 번에 포함하는 **통합 헤더**다. <p>
-편하지만 컴파일이 느려진다.
+OpenCV의 주요 모듈 헤더를 한 번에 포함하는 **통합 헤더**. <p>
 
 OpenCV의 클래스와 함수는 `cv` 네임스페이스 안에 있어 `cv::`를 붙인다. <p>
 단 `CV_8UC1` 같은 상수는 **매크로**라서 `cv::`를 붙이지 않는다.
