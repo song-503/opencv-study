@@ -67,8 +67,8 @@ RAW 영상은 `"rb"`, `"wb"`처럼 **바이너리 모드**로 연다. <p>
 | `calloc` | 메모리 할당 + 0으로 초기화 |
 | `realloc` | 할당된 메모리 크기 변경 |
 | `free` | 메모리 해제 |
-| `atoi` | 문자열 → `int` (실패해도 0 반환) |
-| `atof` | 문자열 → `double` (float 아님) |
+| `atoi` | 문자열 → `int`  |
+| `atof` | 문자열 → `double`  |
 | `exit` | 프로그램 즉시 종료 (0: 정상, 그 외: 비정상) |
 
 ## 5. `typedef unsigned char uchar;`
