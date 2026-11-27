@@ -38,8 +38,8 @@ OpenCV의 `cv::imread`는 헤더 없는 RAW 파일을 읽지 못하기 때문이
 
 | 이름 | 종류 | 설명 |
 |---|---|---|
-| `cv::Mat` | 클래스 | 영상 데이터를 담는 OpenCV 기본 행렬. 생성자는 `Mat(행, 열, 타입)` 순서라 `(height, width, ...)`로 넣는다 |
-| `cv::Size` | 구조체 | `width`, `height`를 묶어 표현한다. 이 템플릿에서는 변수 두 개를 담는 용도로만 쓴다 |
+| `cv::Mat` | 클래스 | 영상 데이터를 담는 OpenCV 기본 행렬. |
+| `cv::Size` | 구조체 | `width`, `height`를 묶어 표현. |
 | `CV_8UC1` | 매크로 상수 | 8bit Unsigned, Channel 1. 즉 0~255 그레이스케일 |
 | `Mat::at<T>(i, j)` | 멤버 함수 | (행 i, 열 j) 원소에 접근한다. `T`는 Mat 타입과 일치해야 한다 (`CV_8UC1` ↔ `uchar`) |
 | `cv::namedWindow` | 함수 | 이름과 크기 옵션(`WINDOW_AUTOSIZE`, `WINDOW_NORMAL`)으로 창을 미리 만든다. 이름이 창의 ID 역할을 한다 |
