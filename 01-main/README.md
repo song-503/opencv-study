@@ -92,47 +92,75 @@ RAW 영상은 `"rb"`, `"wb"`처럼 **바이너리 모드**로 연다. <p>
 
 ## 막힌 점
 
-### 에러인데 `exit(0)`으로 종료함
-- 현상: 파일 열기·메모리 할당 실패 같은 에러 분기에서 모두 `exit(0)`을 호출한다.
-- 원인: `exit`의 인자는 **종료 상태**이고, 0은 "정상 종료"라는 뜻이다. <p>
-  에러가 나도 VS 출력 창에 `코드 0(0x0)으로 종료되었습니다`로 찍혀 정상 실행과 구분이 안 된다.
-- 해결: 에러 분기에서는 `exit(1)` 또는 `exit(EXIT_FAILURE)`를 쓴다. <p>
-  수업 템플릿이라 원본은 그대로 두고 차이만 기록한다.
-- 참고: `exit`는 즉시 종료라서 지역 객체의 소멸자가 호출되지 않는다. <p>
-  정리 작업이 필요한 코드라면 `main`에서 `return`으로 끝내는 편이 안전하다.
+| # | 문제 | 원인 | 해결 |
+|---|---|---|---|
+| 1 | 에러가 나도 정상 종료로 찍힘 | 에러 분기가 모두 `exit(0)` | `exit(EXIT_FAILURE)` 사용 |
+| 2 | `calloc` 하나만 반복문인 이유를 몰랐음 | 첫 할당은 픽셀이 아니라 행 포인터 배열 | 구조를 그림으로 정리 |
 
-### 2차원 할당에서 첫 `calloc`은 한 번인데 두 번째는 반복문인 이유
-- 의문: `uc_alloc`에서 첫 번째 `calloc`은 한 번, 두 번째 `calloc`은 `for`문으로 여러 번 호출한다.
-- 핵심: 첫 번째 `calloc`은 픽셀 공간이 아니라 **행을 가리킬 포인터 배열**이다.
+### 1. 에러인데 `exit(0)`으로 종료함
 
-  ```
-  m ──► [ m[0] ] ──► [ p p p ... p ]   ← 0행 픽셀 size_x개
-        [ m[1] ] ──► [ p p p ... p ]   ← 1행
-        [  ... ]
-        [ m[size_y-1] ] ──► [ p p p ... p ]
-        └ 1단계: calloc 1번 ┘  └ 2단계: 행마다 calloc → size_y번 ┘
-  ```
+파일 열기·메모리 할당에 실패하는 분기에서 모두 `exit(0)`을 호출한다.
 
-  1. `calloc(size_y, sizeof(uchar*))`: 포인터 배열 **하나**를 만든다. <p>
-     블록이 하나라 한 번이면 된다. 이 시점엔 픽셀 공간이 없다.
-  2. `m[i] = calloc(size_x, sizeof(uchar))`: 행마다 픽셀 블록을 따로 만들어 연결한다. <p>
-     행이 `size_y`개라서 `size_y`번 반복한다.
+**원인**
 
-  즉 반복문은 "열 공간"이 아니라 **행 블록을 행 개수만큼** 만드는 것이다.
-- 이유: `img[i][j]`로 접근하기 위해서다. <p>
-  `img[i]`가 i행의 시작 주소이고, `[j]`가 그 행의 j번째 픽셀이다.
-- 단점: 행 블록이 메모리에 흩어져 있어 `fread` 한 번으로 읽을 수 없고, 해제도 행마다 해야 한다. <p>
-  픽셀 전체를 **연속된 블록 하나**로 잡으면 `calloc` 두 번으로 끝난다.
+`exit`의 인자는 종료 상태(exit status)이고, 0은 정상 종료를 뜻한다.
+그래서 에러가 나도 VS 출력 창에는 정상 실행과 똑같이 찍힌다.
 
-  ```cpp
-  uchar** uc_alloc_contiguous(int size_x, int size_y)
-  {
-      uchar** m = (uchar**)calloc(size_y, sizeof(uchar*));           // 행 포인터 배열
-      uchar* data = (uchar*)calloc(size_x * size_y, sizeof(uchar));  // 픽셀 전체를 한 블록으로
-      if (m == NULL || data == NULL) { free(m); free(data); exit(EXIT_FAILURE); }
+```text
+코드 0(0x0)으로 종료되었습니다.
+```
 
-      for (int i = 0; i < size_y; i++)
-          m[i] = data + i * size_x;   // 할당이 아니라 주소 계산만 반복
-      return m;                       // 해제: free(m[0]); free(m);
-  }
-  ```
+**해결**
+
+에러 분기에서는 `exit(1)` 또는 `exit(EXIT_FAILURE)`를 쓴다.
+수업 템플릿이라 원본은 그대로 두고 차이만 기록했다.
+
+> `exit`는 즉시 종료라서 지역 객체의 소멸자가 호출되지 않는다.
+> 정리 작업이 필요한 코드라면 `main`에서 `return`으로 끝내는 편이 안전하다.
+
+### 2. 2차원 할당에서 `calloc` 하나만 반복문인 이유
+
+`uc_alloc`에서 첫 번째 `calloc`은 한 번, 두 번째 `calloc`은 `for`문으로 여러 번 호출한다.
+둘 다 같은 픽셀 공간을 만든다고 생각해서 이유를 몰랐다.
+
+**원인**
+
+첫 번째 `calloc`은 픽셀 공간이 아니라 행을 가리킬 포인터 배열을 만든다.
+
+```text
+m ──► [ m[0]        ] ──► [ p p p ... p ]   0행 픽셀 size_x개
+      [ m[1]        ] ──► [ p p p ... p ]   1행
+      [ ...         ]
+      [ m[size_y-1] ] ──► [ p p p ... p ]   마지막 행
+
+      └ 1단계: 1번 ┘      └ 2단계: 행마다 1번 → size_y번 ┘
+```
+
+| 단계 | 코드 | 만드는 것 | 호출 횟수 |
+|---|---|---|---|
+| 1 | `calloc(size_y, sizeof(uchar*))` | 행 포인터 배열 | 1번 |
+| 2 | `m[i] = calloc(size_x, sizeof(uchar))` | 행 하나의 픽셀 블록 | `size_y`번 |
+
+반복문은 열 공간이 아니라 행 블록을 행 개수만큼 만든다.
+이렇게 나누는 이유는 `img[i][j]`로 접근하기 위해서다.
+`img[i]`가 i행의 시작 주소이고, `[j]`가 그 행의 j번째 픽셀이다.
+
+**해결**
+
+구조를 위 그림으로 정리해서 이해했다.
+이 방식은 행 블록이 메모리에 흩어져 있다.
+그래서 `fread` 한 번으로 전체를 읽을 수 없고, 해제도 행마다 해야 한다.
+픽셀 전체를 연속된 블록 하나로 잡으면 `calloc` 두 번으로 끝난다.
+
+```cpp
+uchar** uc_alloc_contiguous(int size_x, int size_y)
+{
+    uchar** m = (uchar**)calloc(size_y, sizeof(uchar*));           // 행 포인터 배열
+    uchar* data = (uchar*)calloc(size_x * size_y, sizeof(uchar));  // 픽셀 전체를 한 블록으로
+    if (m == NULL || data == NULL) { free(m); free(data); exit(EXIT_FAILURE); }
+
+    for (int i = 0; i < size_y; i++)
+        m[i] = data + i * size_x;   // 할당이 아니라 주소 계산만 반복
+    return m;                       // 해제: free(m[0]); free(m);
+}
+```
